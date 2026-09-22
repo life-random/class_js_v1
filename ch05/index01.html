@@ -20,9 +20,9 @@
       console.log(result);
 
       // 3, 생성자 함수랑 어떤 차이가 있는가?
-      function Person(firstName, lastNamete) {
+      function Person(firstName, lastName) {
         this.firstName = firstName;
-        this.lastNamete = lastNamete;
+        this.lastNamete = lastName;
       }
 
       // 데이터 타입 typeof
@@ -54,7 +54,7 @@
       function checkAge(age) {
         if (age < 0) {
           return "잘못된 나이";
-          // return 키워드를 만나는 순간 함숙 ㅏ끝난다 (실행의 제어권 반납)
+          // return 키워드를 만나는 순간 함수는 끝난다 (실행의 제어권 반납)
         } else {
           return age + "세";
         }
