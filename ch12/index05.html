@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      #box-container {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      .box {
+        width: 100px;
+        height: 100px;
+        background-color: aqua;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>ch12 index04.html 파일 - 요소 숨기기 / 보이기</h1>
+    <button id="append-btn">아이템 추가</button>
+    <button id="delete-btn">아이템 삭제</button>
+
+    <div id="box-container">
+      <div class="box">아이템 1</div>
+      <div class="box">아이템 2</div>
+      <div class="box">아이템 3</div>
+    </div>
+    <script>
+      const appendBtn = document.getElementById("append-btn");
+      const deleteBtn = document.getElementById("delete-btn");
+      const boxContainer = document.getElementById("box-container");
+
+      appendBtn.addEventListener("click", () => {
+        const box = document.createElement("div");
+        box.textContent = `아이템 ${++boxContainer.children.length}`;
+        box.className = "box";
+        boxContainer.append(box);
+      });
+
+      deleteBtn.addEventListener("click", () => {
+        const box = boxContainer.lastElementChild;
+        box.remove();
+      });
+    </script>
+  </body>
+</html>
