@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        padding: 20px;
+      }
+      ul {
+        list-style: none;
+        margin-top: 20px;
+        width: 300px;
+      }
+
+      li {
+        background-color: aliceblue;
+        border: 1px solid bisque;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      button {
+        padding: 5px 10px;
+        margin: 0 5px;
+      }
+
+      .done {
+        text-decoration: line-through;
+        background: gray;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>ch13 index05.html 파일</h1>
+    <button id="btnAdd">새 아이템 추가</button>
+
+    <ul id="itemList">
+      <li>
+        기존 아이템 1 <span><button class="done-btn">완료</button><button class="delete-btn">삭제</button></span>
+      </li>
+      <li>
+        기존 아이템 2 <span><button class="done-btn">완료</button><button class="delete-btn">삭제</button></span>
+      </li>
+      <li>
+        기존 아이템 3 <span><button class="done-btn">완료</button><button class="delete-btn">삭제</button></span>
+      </li>
+    </ul>
+    <script>
+      // 페이지가 로드된 시점에는 존재하는 버튼이 현재 3개 (NodeList)
+      const btnAddEl = document.querySelector("#btnAdd");
+      const itemListEl = document.querySelector("#itemList");
+
+      itemListEl.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const li = e.target.closest("li");
+
+        // 클릭된 요소가 삭제 버튼일 때만 동작한다
+        if (e.target.classList.contains("delete-btn")) {
+          // e.target.parentElement <-- 삭제 버튼의 부모 li버튼을 가르킴
+          if (confirm("정말 삭제하시겠습니까", "예", "아니요")) {
+            li.remove();
+          }
+        } else if (e.target.classList.contains("done-btn")) {
+          li.classList.toggle("done");
+          // e.target.closest("li").style.textDecoration = "line-through";
+        }
+      });
+
+      btnAddEl.addEventListener("click", () => {
+        let currentCount = itemListEl.children.length;
+
+        const newItem = document.createElement("li");
+        newItem.innerHTML = `기존 아이템 ${++currentCount} <span><button class="done-btn">완료</button><button class="delete-btn">삭제</button></span>`;
+        itemListEl.append(newItem);
+      });
+    </script>
+  </body>
+</html>
