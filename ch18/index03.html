@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="../reset.css" />
+    <style>
+      body {
+        display: flex;
+        /* justify-content: center; */
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+        margin-top: 50px;
+        min-height: 100vh;
+        background: linear-gradient(to bottom, #4d9de4, #c2e9fb);
+      }
+
+      h1 {
+        color: white;
+        font-size: 30px;
+        font-family: "Times New Roman", Times, serif;
+      }
+      #cityName {
+        border: none;
+        padding: 6px;
+        border-radius: 10px;
+        font-size: 19px;
+      }
+      #cityName:focus {
+        border: 1px solid #4d9de4;
+        outline: none;
+      }
+      #searchBtn {
+        border: 1px solid #4d9de4;
+        padding: 6px 15px;
+        font-size: 19px;
+        border-radius: 10px;
+      }
+      #search-layout {
+        display: flex;
+        gap: 10px;
+      }
+      #weatherResult {
+        display: flex;
+        font-size: 30px;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .daily-weather {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        background-color: rgba(255, 255, 255, 0.5);
+        padding: 5px 10px;
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>도시 날씨</h1>
+    <div id="search-layout">
+      <input type="text" id="cityName" placeholder="도시 이름을 입력하세요" />
+      <button id="searchBtn">Search</button>
+    </div>
+    <div id="weatherResult"></div>
+    <script type="module">
+      import { weatherEmoji } from "./weatherData.js";
+      import { cityMap } from "./weatherData.js";
+
+      const cityName = document.getElementById("cityName");
+      const searchBtn = document.getElementById("searchBtn");
+
+      async function searchlocationByCity() {
+        const city = cityName.value;
+
+        // 도시명 한 -> 영 치환 (없으시 그대로 입력)
+        const url = `https://geocoding-api.open-meteo.com/v1/search?name=${cityMap[city] || city}&count=1&language=ko&format=json`;
+        console.log("url:", url);
+
+        try {
+          const response = await fetch(url, {
+            method: `GET`,
+          });
+          console.log(response.status);
+          const data = await response.json();
+          console.log("data : ", data);
+          searchWeatherByLocation(data);
+        } catch (error) {
+          console.error("요청 실패:", error);
+        }
+      }
+
+      async function searchWeatherByLocation(data) {
+        const latitude = data.results[0].latitude;
+        const longitude = data.results[0].longitude;
+
+        console.log("위도:", latitude);
+        console.log("경도:", longitude);
+
+        const weatherUrl =
+          `https://api.open-meteo.com/v1/forecast` +
+          `?latitude=${latitude}` +
+          `&longitude=${longitude}` +
+          `&daily=weather_code,temperature_2m_max,temperature_2m_min` +
+          `&forecast_days=5` +
+          `&timezone=auto`;
+
+        const response = await fetch(weatherUrl);
+        const weatherData = await response.json();
+
+        //   console.log("전체 날씨 데이터:", weatherData);
+
+        //   const temperature = weatherData.current.temperature_2m;
+        //   const weatherCode = weatherData.current.weather_code;
+
+        //   console.log("현재 기온:", temperature);
+        //   console.log("날씨 코드:", weatherCode);
+
+        //   const weatherResult = document.getElementById("weatherResult");
+
+        //   weatherResult.innerHTML = `${weatherEmoji[weatherCode]}${temperature}℃`;
+        const daily = weatherData.daily;
+
+        let result = "";
+
+        const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
+
+        for (let i = 0; i < 5; i++) {
+          const date = new Date(daily.time[i]);
+          const day = weekDays[date.getDay()];
+
+          const maxTemp = daily.temperature_2m_max[i];
+          const minTemp = daily.temperature_2m_min[i];
+          const weatherCode = daily.weather_code[i];
+
+          result += `
+            <div class="daily-weather">
+                 <div>${day}</div>
+              <div>${weatherEmoji[weatherCode]}</div>
+              <div>${maxTemp}℃ / ${minTemp}℃</div>
+            </div>
+          `;
+        }
+
+        weatherResult.innerHTML = result;
+      }
+
+      searchBtn.addEventListener("click", searchlocationByCity);
+    </script>
+  </body>
+</html>

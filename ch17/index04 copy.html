@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>ch17 index04.html 연습</h1>
+    <input type="password" style="padding: 4px" id="passwordInput" /><br />
+    <input type="password" style="padding: 4px" id="passwordchack" /><br />
+    <button id="chackBtn">확인</button>
+    <script>
+      const passwordInput = document.getElementById("passwordInput");
+      const passwordchack = document.getElementById("passwordchack");
+      const chackBtn = document.getElementById("chackBtn");
+
+      function makePassword(password, chack) {
+        return new Promise(function (resolve, rejected) {
+          setTimeout(function () {
+            if (password === chack) {
+              resolve(`패스워드가 확인되었습니다`);
+            } else {
+              rejected(`패스워드가 올바르지 않습니다`);
+            }
+          }, 3000);
+        });
+      }
+
+      chackBtn.addEventListener("click", async () => {
+        try {
+          const message = await makePassword(
+            passwordInput.value,
+            passwordchack.value,
+          );
+          alert(`result : ${message}`);
+        } catch (error) {
+          alert(`error : ${error}`);
+        }
+      });
+    </script>
+  </body>
+</html>
